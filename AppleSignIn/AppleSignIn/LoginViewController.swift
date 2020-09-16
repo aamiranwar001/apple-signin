@@ -56,7 +56,7 @@ class LoginViewController: UIViewController {
     
     @objc func appleIDStateChanged() {
         let provider = ASAuthorizationAppleIDProvider()
-        provider.getCredentialState(forUserID: "") { (credentialState, error) in
+        provider.getCredentialState(forUserID: "\(UserDefaults.standard.value(forKey: "User_AppleID")!)") { (credentialState, error) in
             switch credentialState {
                 case .authorized:
                     print("User is already authorized")
@@ -84,15 +84,24 @@ extension LoginViewController : ASAuthorizationControllerDelegate {
         // authorization object contains all the required data from the authorization process
         if let credential = authorization.credential as? ASAuthorizationAppleIDCredential {
             if let email = credential.email {
-                // Sign in with email
+                UserDefaults.standard.set("\(email)", forKey: "User_Email")
             }
             
             if let fullName = credential.fullName {
-                
+                UserDefaults.standard.set(fullName.givenName ?? "", forKey: "User_FirstName")
+                UserDefaults.standard.set(fullName.familyName ?? "", forKey: "User_LastName")
             }
             
             let userID = credential.user
-            // save user ID
+            if userID != "" {
+                UserDefaults.standard.set("\(userID)", forKey: "User_AppleID")
+            }
+            
+            UserDefaults.standard.synchronize()
+            
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let vc = storyboard.instantiateViewController(identifier: "DetailViewController") as DetailViewController
+            self.navigationController?.pushViewController(vc, animated: true)
         }
     }
 }

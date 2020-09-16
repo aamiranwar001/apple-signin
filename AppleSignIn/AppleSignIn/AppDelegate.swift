@@ -6,21 +6,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        let appleIDProvider = ASAuthorizationAppleIDProvider()
-        appleIDProvider.getCredentialState(forUserID: "") { (credentialState, error) in
-            switch credentialState {
-            case .authorized:
-                let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                let vc = storyboard.instantiateViewController(identifier: "DetailViewController") as! DetailViewController
-                let navVC = UINavigationController(rootViewController: vc)
-                UIApplication.shared.windows.first { $0.isKeyWindow }?.rootViewController = navVC
-            case .revoked, .notFound:
-                break
-            default:
-                break
-            }
-        }
-        
         return true
     }
 
